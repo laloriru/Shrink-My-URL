@@ -3,14 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:validators/validators.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:shortmyurl/shortener/bloc/shortener_cubit.dart';
+import 'package:shortmyurl/shortener/model/links_db.dart' as database;
 
 class ShortenerForm {
-  ShortenerForm(this.context) : super();
+  ShortenerForm({required this.context}) : super();
 
   BuildContext context;
   final GlobalKey<FormState> urlFormKey = GlobalKey<FormState>();
   final urlTextFieldController = TextEditingController();
   String urlToShort = '';
+  bool setFocus = true;
 
   submitForm() {
     urlFormKey.currentState?.save();
@@ -47,6 +49,7 @@ class ShortenerForm {
   } //
 
   Widget form() {
+    if (database.links.isNotEmpty) setFocus = false;
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -63,7 +66,7 @@ class ShortenerForm {
                           width: 280,
                           height: 80,
                           child: TextFormField(
-                            autofocus: true,
+                            autofocus: setFocus,
                             controller: urlTextFieldController,
                             keyboardType: TextInputType.name,
                             textCapitalization: TextCapitalization.words,

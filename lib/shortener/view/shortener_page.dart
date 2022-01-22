@@ -36,7 +36,7 @@ class _ShortenerPageState extends State<ShortenerPage> {
     return BlocBuilder<ShortenerCubit, ShortenerState>(
         builder: (BuildContext context, ShortenerState? state) {
       if (state is InitialState) {
-        return ShortenerForm(context).form();
+        return ShortenerForm(context: context).form();
       } else if (state is LoadingState) {
         return const Center(
             child: SizedBox(
@@ -46,8 +46,8 @@ class _ShortenerPageState extends State<ShortenerPage> {
             ));
       } else if (state is ShortenedState) {
         return ListView(children: <Widget>[
-          ShortenerForm(context).form(),
-          ShortenerLinkList(linkToAdd: state.link).list(),
+          ShortenerForm(context: context).form(),
+          ShortenerLinkList(context: context, linkToAdd: state.link).list(),
         ]);
       } else {
         return const Center(child: Text('Please verify internet connection.'));
