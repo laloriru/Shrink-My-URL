@@ -1,18 +1,21 @@
 import 'dart:convert';
 
-import 'package:shortmyurl/repository/repo.dart';
+import 'package:shortmyurl/herokuapp_repo/repo.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../model/url_model.dart';
 
-class ShorttenerCubit extends Cubit<UrlState> {
-  ShorttenerCubit() : super(const InitialState());
+class ShortenerCubit extends Cubit<UrlState> {
+  ShortenerCubit() : super(const InitialState());
 
-  final Repo _repo = Repo();
+  final HerokuAppRepo _repo = HerokuAppRepo();
 
   Future<void> shrinkUrl(String urlToShrink) async {
-    final response = await _repo.shrinkURl(urlToShrink);
+    final Map<String, String> _post = <String, String>{
+      'url': urlToShrink,
+    };
+    final response = await _repo.postToURl(_post);
     if (response.statusCode == 201 || response.statusCode == 200) {
       final values = json.decode(response.body);
     } else {
@@ -22,8 +25,8 @@ class ShorttenerCubit extends Cubit<UrlState> {
     print(response.statusCode.toString());
   }
 
-  Future<void> getShortURl(String id) async {
-    final response = await _repo.getShortURl(id);
+  Future<void> getShortURl(String urlId) async {
+    final response = await _repo.getFromURl(urlId);
     /*
     if (response.statusCode == 201 || response.statusCode == 200) {
       final values = json.decode(response.body);

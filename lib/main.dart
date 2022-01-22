@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shortmyurl/repository/repo.dart';
-import 'package:shortmyurl/shorttener/bloc/shortener_cubit.dart';
-import 'package:shortmyurl/shorttener/view/shorttener_page.dart';
+import 'package:shortmyurl/herokuapp_repo/repo.dart';
+import 'package:shortmyurl/shortener/bloc/shortener_cubit.dart';
+import 'package:shortmyurl/shortener/view/shortener_page.dart';
 
 void main() {
   runApp(const ShortMyUrlApp());
@@ -16,17 +16,17 @@ class ShortMyUrlApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: <BlocProvider>[
-          BlocProvider<ShorttenerCubit>(
-            create: (BuildContext context) => ShorttenerCubit(),
+          BlocProvider<ShortenerCubit>(
+            create: (BuildContext context) => ShortenerCubit(),
           ),
         ],
         child: MaterialApp(
           title: 'Short my URL',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-            primarySwatch: Colors.blue,
+            primarySwatch: Colors.green,
           ),
-          home: const ShorttenerPage(),
+          home: const ShortenerPage(),
         ));
   }
 }
