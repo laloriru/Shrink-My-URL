@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class HerokuAppRepo {
@@ -14,6 +15,9 @@ class HerokuAppRepo {
       },
       body: jsonEncode(_body),
     );
+    if (kDebugMode) {
+      print('postToURl Response Body: ${response.body.toString()}');
+    }
     return response;
   }
 
@@ -23,6 +27,9 @@ class HerokuAppRepo {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       });
+    if (kDebugMode) {
+      print('getFromURl Response Body: ${response.body.toString()}');
+    }
     return response;
   }
 
