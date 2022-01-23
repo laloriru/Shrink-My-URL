@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shortmyurl/herokuapp_repo/repo.dart';
-import 'package:shortmyurl/shortener/bloc/shortener_cubit.dart';
+import 'package:shortmyurl/shortener/controller/shortener_cubit.dart';
 import 'package:shortmyurl/shortener/view/shortener_page.dart';
 
 void main() {

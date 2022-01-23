@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shortmyurl/shortener/model/links_db.dart' as database;
+import 'package:shortmyurl/shortener/data/links_db.dart' as database;
 import 'package:clipboard/clipboard.dart';
 
 class ShortenerLinkList {
@@ -35,36 +35,46 @@ class ShortenerLinkList {
   } //
 
   Widget list() {
-    return FutureBuilder(
-        future: buildLinksList(),
-        builder: (BuildContext context, AsyncSnapshot<Object?> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            final List<Map<String, String>> item =
-                snapshot.data! as List<Map<String, String>>;
-            return ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: itemsCounter,
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  return GestureDetector(
-                      onTap: () =>
-                          copyToClipboard(item[index]['short'].toString()),
-                      child: Padding(
-                          padding: const EdgeInsets.fromLTRB(8, 3, 8, 8),
-                          child: Card(
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6)),
-                              child: ListTile(
-                                  title: Text(item[index]['short'].toString()),
-                                  subtitle:
-                                      Text(item[index]['long'].toString())))));
-                });
-          } else {
-            return Container();
-          }
-        });
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child:
+                  Center(child: Text('Tap to copy shrank link to clipboard'))),
+          FutureBuilder(
+              future: buildLinksList(),
+              builder: (BuildContext context, AsyncSnapshot<Object?> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  final List<Map<String, String>> item =
+                      snapshot.data! as List<Map<String, String>>;
+                  return ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: itemsCounter,
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                            onTap: () => copyToClipboard(
+                                item[index]['short'].toString()),
+                            child: Padding(
+                                padding: const EdgeInsets.fromLTRB(8, 3, 8, 8),
+                                child: Card(
+                                    elevation: 5,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(6)),
+                                    child: ListTile(
+                                        title: Text(
+                                            item[index]['short'].toString()),
+                                        subtitle: Text(
+                                            item[index]['long'].toString())))));
+                      });
+                } else {
+                  return Container();
+                }
+              })
+        ]);
   } //
 
 } //

@@ -4,7 +4,7 @@ import 'package:shortmyurl/herokuapp_repo/repo.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:shortmyurl/shortener/model/shortener_model.dart';
+import 'package:shortmyurl/shortener/controller/shortener_state.dart';
 
 class ShortenerCubit extends Cubit<ShortenerState> {
   ShortenerCubit() : super(const InitialState());
@@ -19,14 +19,15 @@ class ShortenerCubit extends Cubit<ShortenerState> {
       };
       final response = await _repo.postToURl(linkToSubmit);
       if (response.statusCode == 201 || response.statusCode == 200) {
-        final Map responseMap = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
+        final Map responseMap =
+            jsonDecode(utf8.decode(response.bodyBytes)) as Map;
         final Map<String, String> newLink = {
           'long': responseMap['_links']['self'].toString(),
           'short': responseMap['_links']['short'].toString(),
           'id': responseMap['alias'].toString(),
         };
         if (kDebugMode) {
-          print('Link: ${newLink.toString()}');
+          print('Shrink Link: ${newLink.toString()}');
         }
         emit(ShortenedState(newLink));
       } else {
@@ -35,7 +36,7 @@ class ShortenerCubit extends Cubit<ShortenerState> {
     } catch (e) {
       emit(ErrorState(e.toString()));
     }
-  }//
+  } //
 
   Future<void> getShortURl(String urlId) async {
     final response = await _repo.getFromURl(urlId);
@@ -49,6 +50,6 @@ class ShortenerCubit extends Cubit<ShortenerState> {
       print(response.body.toString());
       print(response.statusCode.toString());
     }
-  }//
+  } //
 
-}//
+} //
