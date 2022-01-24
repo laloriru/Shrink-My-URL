@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shortmyurl/shortener/data/links_db.dart' as database;
 import 'package:clipboard/clipboard.dart';
+import 'package:shortmyurl/snackbar.dart';
+import 'package:shortmyurl/shortener/controller/shortener_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ShortenerLinkList {
   ShortenerLinkList({required this.context, this.linkToAdd}) : super();
@@ -10,27 +13,18 @@ class ShortenerLinkList {
   int itemsCounter = 0;
 
   Future<List<Map>> buildLinksList() async {
-    if (linkToAdd?.isNotEmpty == true) {
-      database.links.add(linkToAdd!);
-    }
     itemsCounter = database.links.length;
     return database.links;
   } //
 
-  copyToClipboard(String _copy) {
+  Future<void> retrieveUrlFromAlias(String alias) async {
+    BlocProvider.of<ShortenerCubit>(context).getShortURl(alias);
+  } //
+
+  void copyToClipboard(String _copy) {
     FlutterClipboard.copy(_copy).then((value) {
-      const SnackBar _snackBar = SnackBar(
-          duration: Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.all(30.0),
-          content: Text(
-            '¡Short URL copied to clipboard!',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white),
-          ));
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
-        ScaffoldMessenger.of(context).showSnackBar(_snackBar);
-      });
+      CustomSnackbar(context)
+          .show('¡Short URL copied to clipboard!', Colors.brown, Colors.white);
     });
   } //
 
@@ -39,10 +33,7 @@ class ShortenerLinkList {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child:
-                  Center(child: Text('Tap to copy shrank link to clipboard'))),
+          (database.links.isNotEmpty) ? header() : Container(),
           FutureBuilder(
               future: buildLinksList(),
               builder: (BuildContext context, AsyncSnapshot<Object?> snapshot) {
@@ -56,10 +47,12 @@ class ShortenerLinkList {
                       shrinkWrap: true,
                       itemBuilder: (BuildContext context, int index) {
                         return GestureDetector(
-                            onTap: () => copyToClipboard(
+                            onTap: () => retrieveUrlFromAlias(
+                                item[index]['alias'].toString()),
+                            onDoubleTap: () => copyToClipboard(
                                 item[index]['short'].toString()),
                             child: Padding(
-                                padding: const EdgeInsets.fromLTRB(8, 3, 8, 8),
+                                padding: const EdgeInsets.fromLTRB(12, 3, 12, 7),
                                 child: Card(
                                     elevation: 5,
                                     shape: RoundedRectangleBorder(
@@ -67,14 +60,40 @@ class ShortenerLinkList {
                                     child: ListTile(
                                         title: Text(
                                             item[index]['short'].toString()),
-                                        subtitle: Text(
-                                            item[index]['long'].toString())))));
+                                        subtitle: Text(item[index]
+                                                ['original_link']
+                                            .toString())))));
                       });
                 } else {
                   return Container();
                 }
               })
         ]);
+  } //
+
+  Widget header() {
+    return Column(children: <Widget>[
+      Row(mainAxisAlignment: MainAxisAlignment.center,
+          children: const <Widget>[
+            Padding(
+                padding: EdgeInsets.only(top: 25),
+                child: Icon(Icons.cloud_download, color: Colors.green)),
+            SizedBox(width: 5),
+            Padding(
+                padding: EdgeInsets.only(top: 25),
+                child: Text('Tap to retrieve link from alias')),
+          ]),
+      Row(mainAxisAlignment: MainAxisAlignment.center,
+          children: const <Widget>[
+            Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Icon(Icons.content_copy, color: Colors.blueGrey)),
+            SizedBox(width: 5),
+            Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Text('Tap to retrieve link from alias')),
+          ])
+    ]);
   } //
 
 } //

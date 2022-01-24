@@ -23,7 +23,7 @@ class ShortMyUrlApp extends StatelessWidget {
           title: 'Short my URL',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-            primarySwatch: Colors.green,
+            primarySwatch: Colors.brown,
           ),
           home: const ShortenerPage(),
         ));

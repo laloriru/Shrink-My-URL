@@ -16,6 +16,11 @@ class ShortenedState extends ShortenerState {
   Map<String, String> link;
 }//
 
+class RetrievedState extends ShortenerState {
+  RetrievedState(this.link);
+  Map<String, String> link;
+}//
+
 class ErrorState extends ShortenerState {
   ErrorState(this.errorMessage);
   String errorMessage = '';

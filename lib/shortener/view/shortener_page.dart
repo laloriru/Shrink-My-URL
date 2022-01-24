@@ -3,6 +3,7 @@ import 'package:shortmyurl/shortener/controller/shortener_state.dart';
 import 'package:shortmyurl/shortener/view/form.dart';
 import 'package:shortmyurl/shortener/view/list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shortmyurl/snackbar.dart';
 import 'package:shortmyurl/shortener/controller/shortener_cubit.dart';
 
 class ShortenerPage extends StatefulWidget {
@@ -45,29 +46,29 @@ class _ShortenerPageState extends State<ShortenerPage> {
           width: 40.0,
         ));
       } else if (state is ShortenedState) {
-        return ListView(children: <Widget>[
-          ShortenerForm(context: context).form(),
-          ShortenerLinkList(context: context, linkToAdd: state.link).list(),
-        ]);
+        return listView();
+      } else if (state is RetrievedState) {
+        CustomSnackbar(context).show(
+            '${state.link['full_link'].toString()} is the full link from alias: ${state.link['alias'].toString()}',
+            Colors.green,
+            Colors.white,
+            const Duration(seconds: 5));
+        return listView();
       } else if (state is ErrorState) {
-        SnackBar _snackBar = SnackBar(
-            duration: const Duration(seconds: 2),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.all(30.0),
-            content: Text(
-              state.errorMessage,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white),
-            ));
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
-          ScaffoldMessenger.of(context).showSnackBar(_snackBar);
-        });
-        return ShortenerForm(context: context).form();
+        CustomSnackbar(context)
+            .show(state.errorMessage, Colors.red, Colors.white);
+        return listView();
       } else {
         return const Center(child: Text('Please verify internet connection.'));
       }
     });
   } //
+
+  Widget listView() {
+    return ListView(children: <Widget>[
+      ShortenerForm(context: context).form(),
+      ShortenerLinkList(context: context).list(),
+    ]);
+  }//
 
 } //_ShortenerPageState

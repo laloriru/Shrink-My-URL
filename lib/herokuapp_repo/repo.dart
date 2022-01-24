@@ -22,9 +22,9 @@ class HerokuAppRepo {
     return response;
   }
 
-  Future<http.Response> getFromURl(String id) async {
+  Future<http.Response> getFromURl(String alias) async {
     final response =
-        await http.get(Uri.parse(apiURL + '/$id'), headers: <String, String>{
+        await http.get(Uri.parse(apiURL + '/$alias'), headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     }).timeout(const Duration(seconds: 5));
     if (kDebugMode) {
