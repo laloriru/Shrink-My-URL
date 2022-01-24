@@ -5,6 +5,7 @@ import 'package:shortmyurl/shortener/view/list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shortmyurl/snackbar.dart';
 import 'package:shortmyurl/shortener/controller/shortener_cubit.dart';
+//For tests run flutter test integration_test
 
 class ShortenerPage extends StatefulWidget {
   const ShortenerPage({Key? key}) : super(key: key);
@@ -21,9 +22,12 @@ class _ShortenerPageState extends State<ShortenerPage> {
     super.initState();
   } //
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         primary: true,
         centerTitle: true,
@@ -37,7 +41,7 @@ class _ShortenerPageState extends State<ShortenerPage> {
     return BlocBuilder<ShortenerCubit, ShortenerState>(
         builder: (BuildContext context, ShortenerState? state) {
       if (state is InitialState) {
-        return ShortenerForm(context: context).form();
+        return ShortenerForm();
       } else if (state is LoadingState) {
         return const Center(
             child: SizedBox(
@@ -66,9 +70,9 @@ class _ShortenerPageState extends State<ShortenerPage> {
 
   Widget listView() {
     return ListView(children: <Widget>[
-      ShortenerForm(context: context).form(),
-      ShortenerLinkList(context: context).list(),
+      ShortenerForm(),
+      ShortenerLinkList(),
     ]);
-  }//
+  } //
 
 } //_ShortenerPageState

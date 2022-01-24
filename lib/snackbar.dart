@@ -5,7 +5,8 @@ class CustomSnackbar {
 
   BuildContext context;
 
-  show(String message, Color _background, Color _textColor, [Duration timeToShow = const Duration(seconds: 2)]) {
+  show(String message, Color _background, Color _textColor,
+      [Duration timeToShow = const Duration(seconds: 2)]) {
     SnackBar _snackBar = SnackBar(
         duration: timeToShow,
         backgroundColor: _background,
@@ -16,11 +17,6 @@ class CustomSnackbar {
           textAlign: TextAlign.center,
           style: TextStyle(color: _textColor),
         ));
-    //Hide keyboard for snackbar visibility
-    if (FocusScope.of(context).isFirstFocus) {
-      FocusScope.of(context).requestFocus(FocusNode());
-    }
-    FocusManager.instance.primaryFocus?.unfocus();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(_snackBar);

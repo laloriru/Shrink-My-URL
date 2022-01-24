@@ -5,39 +5,39 @@ import 'package:clipboard/clipboard.dart';
 import 'package:shortmyurl/shortener/controller/shortener_cubit.dart';
 import 'package:shortmyurl/snackbar.dart';
 
-class ShortenerForm {
-  ShortenerForm({required this.context}) : super();
+class ShortenerForm extends StatelessWidget {
+  ShortenerForm() : super(key: const Key('ShortenerForm'));
 
-  BuildContext context;
-  final GlobalKey<FormState> urlFormKey = GlobalKey<FormState>();
-  final urlTextFieldController = TextEditingController();
+  GlobalKey<FormState> urlFormKey = GlobalKey<FormState>();
+  TextEditingController urlTextFieldController = TextEditingController();
   String urlToShrink = '';
 
-  submitForm() async {
-    urlFormKey.currentState?.save();
-    if (urlToShrink.isNotEmpty && isURL(urlToShrink)) {
-      BlocProvider.of<ShortenerCubit>(context).shrinkUrl(urlToShrink);
-    } else {
-      CustomSnackbar(context)
-          .show('Incorrect URL submitted', Colors.red, Colors.white);
-    }
-  } //
+  @override
+  Widget build(BuildContext context) {
+    submitForm() async {
+      urlFormKey.currentState?.save();
+      if (urlToShrink.isNotEmpty && isURL(urlToShrink)) {
+        BlocProvider.of<ShortenerCubit>(context).shrinkUrl(urlToShrink);
+      } else {
+        CustomSnackbar(context)
+            .show('Incorrect URL submitted', Colors.red, Colors.white);
+      }
+    } //
 
-  pasteFromClipboard() {
-    FlutterClipboard.paste().then((value) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
-        urlTextFieldController.text = value;
-        urlToShrink = value;
+    pasteFromClipboard() {
+      FlutterClipboard.paste().then((value) {
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
+          urlTextFieldController.text = value;
+          urlToShrink = value;
+        });
       });
-    });
-  } //
+    } //
 
-  clearForm() {
-    urlToShrink = '';
-    urlFormKey.currentState?.reset();
-  } //
+    clearForm() {
+      urlToShrink = '';
+      urlFormKey.currentState?.reset();
+    } //
 
-  Widget form() {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Container(
           color: Colors.white70,
@@ -60,9 +60,7 @@ class ShortenerForm {
                             autocorrect: true,
                             maxLines: 1,
                             validator: (String? link) {
-                              if ((!isURL(link!) && link.trim() != '') ||
-                                  (matches(link, 'herokuapp')) ||
-                                  (matches(link, 'url-shortener'))) {
+                              if (!isURL(link!) && link.trim() != '') {
                                 return 'Wrong URL, please check this value';
                               }
                               return null;
